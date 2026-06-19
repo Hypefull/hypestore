@@ -62,13 +62,13 @@
                         <a href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/admin"class="nav-link active" href="#">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Books</a>
+                        <a class="nav-link" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/admin/books.php">Books</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Categories</a>
+                        <a href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/admin/categories.php" class="nav-link">Categories</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Orders</a>
+                        <a class="nav-link" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/admin/orders.php">Orders</a>
                     </li>
                 </ul>
             </div>
@@ -89,9 +89,7 @@
                 <div class="col-lg-6">
                     <h1 class="display-4 fw-bold">Admin Dashboard</h1>
                     <p class="lead mt-3 mb-4">Manage books, categories, and orders from one place.</p>
-                        <button class="btn btn-light btn-lg me-2">
-                            View Books
-                        </button>
+                        <a href="books.php" class="btn btn-light btn-lg me-2">View Books</a>
                 </div>
                 <div class="col-lg-6 text-center mt-5">
                     <img src="../assets/adminhero.png" class="img-fluid w-50">
@@ -164,7 +162,7 @@
                 <p class="text-muted">
                     View, edit, or delete books.
                 </p>
-                <a href="#" class="btn btn-outline-primary">Manage Books</a>
+                <a href="books.php" class="btn btn-outline-primary">Manage Books</a>
             </div>
         </div>
 
@@ -175,7 +173,7 @@
                 <p class="text-muted">
                     View, edit, or delete categories.
                 </p>
-                <a href="#" class="btn btn-outline-primary">Manage Categories</a>
+                <a href="categories.php" class="btn btn-outline-primary">Manage Categories</a>
             </div>
         </div>
 
@@ -186,7 +184,7 @@
                 <p class="text-muted">
                     View customer transactions.
                 </p>
-                <a href="#" class="btn btn-outline-primary">View Orders</a>
+                <a href="orders.php" class="btn btn-outline-primary">View Orders</a>
             </div>
         </div>
     </div>

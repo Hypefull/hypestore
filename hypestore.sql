@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 18, 2026 at 07:40 PM
+-- Generation Time: Jun 19, 2026 at 03:28 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -55,15 +55,17 @@ CREATE TABLE `books` (
   `stock` int(11) NOT NULL,
   `cover` varchar(200) NOT NULL,
   `description` varchar(400) NOT NULL,
-  `id_category` int(11) NOT NULL
+  `id_category` int(11) NOT NULL,
+  `rating` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `books`
 --
 
-INSERT INTO `books` (`id`, `title`, `author`, `price`, `stock`, `cover`, `description`, `id_category`) VALUES
-(1, 'The Intelligent Investor', 'Benjamin Graham', '200000', 67, 'theintelligentinvestor.jpg', 'The Intelligent Investor by Benjamin Graham, first published in 1949, is a widely acclaimed book on value investing. The book provides strategies on how to successfully use value investing in the stock market. Historically, the book has been one of the most popular books on investing and Graham\'s legacy remains.', 4);
+INSERT INTO `books` (`id`, `title`, `author`, `price`, `stock`, `cover`, `description`, `id_category`, `rating`) VALUES
+(1, 'The Intelligent Investor', 'Benjamin Graham', '250000', 67, 'theintelligentinvestor.jpg', 'The Intelligent Investor by Benjamin Graham, first published in 1949, is a widely acclaimed book on value investing. The book provides strategies on how to successfully use value investing in the stock market. Historically, the book has been one of the most popular books on investing and Graham\'s legacy remains.', 4, 4.5),
+(3, 'Harry Potter', 'J. K. Rowling', '127000', 21, 'harrypotter.jpg', 'Harry Potter is a series of seven children\'s fantasy novels written by British author J. K. Rowling. The novels chronicle the lives of a young wizard, Harry Potter, and his friends, Ron Weasley and Hermione Granger, among others, all of whom are students at Hogwarts School of Witchcraft and Wizardry.', 3, NULL);
 
 -- --------------------------------------------------------
 
@@ -74,19 +76,20 @@ INSERT INTO `books` (`id`, `title`, `author`, `price`, `stock`, `cover`, `descri
 CREATE TABLE `categories` (
   `id` int(11) NOT NULL,
   `name` varchar(200) NOT NULL,
-  `description` varchar(400) NOT NULL
+  `description` varchar(400) NOT NULL,
+  `color` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `categories`
 --
 
-INSERT INTO `categories` (`id`, `name`, `description`) VALUES
-(1, 'Informatics', 'Informatics is the interdisciplinary study of information, focusing on how humans and technology interact to collect, process, manage, and transform data into actionable knowledge across various fields.'),
-(2, 'History', 'History is the systematic study and recording of past events, human societies, and change over time, allowing us to understand how our world evolved and to draw lessons for the future.'),
-(3, 'Novels', 'A novel is a fictional, long-form narrative written in prose that weaves together characters, settings, and plot into an immersive story.'),
-(4, 'Economics', 'Economics is the social science that studies how individuals, businesses, and societies allocate scarce resources to satisfy unlimited wants and needs'),
-(5, 'Philosophy', 'Philosophy is the systematic, rational, and critical study of fundamental questions regarding existence, knowledge, values, reason, mind, and language.');
+INSERT INTO `categories` (`id`, `name`, `description`, `color`) VALUES
+(1, 'Informatics', 'Informatics is the interdisciplinary study of how information is collected, organized, stored, and processed, bridging the gap between computer systems, data science, and human behavior to transform raw information into actionable knowledge.', 'primary'),
+(2, 'History', 'History is the continuous, recorded study of past events, societies, and human experiences that seeks to explain how we evolved, why the world functions as it does today, and what lessons we can learn for the future.', 'success'),
+(3, 'Novels', 'A novel is a fictional, long-form narrative written in prose that explores the human experience through a structured blend of setting, character arcs, and plot.', 'warning'),
+(4, 'Economics', 'Economics is the social science that studies how individuals, businesses, and societies allocate scarce resources to satisfy unlimited wants and needs.', 'danger'),
+(5, 'Philosophy', 'Philosophy is the systematic, rational, and critical study of fundamental questions regarding existence, knowledge, values, reason, mind, and language.', 'dark');
 
 -- --------------------------------------------------------
 
@@ -151,13 +154,13 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `books`
 --
 ALTER TABLE `books`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`

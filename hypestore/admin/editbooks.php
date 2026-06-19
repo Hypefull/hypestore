@@ -3,6 +3,9 @@
     require_once('../library/database.php');
     require_once('../library/koneksi.php');
     $connection = new Database($host, $user, $pass, $database);
+    $displayedit = "SELECT * from books where id=".$_GET['id'];
+    $resultedit = $connection->conn->query($displayedit);
+    $rowedit = $resultedit->fetch_assoc();
 
     if(!isset($_SESSION['admin'])){
         header("location: login.php");
@@ -14,6 +17,7 @@
         session_destroy();
         header("location: login.php");
     }
+
     if(isset($_POST['submit'])){
         $title = mysqli_real_escape_string($connection->conn, $_POST['title']);
         $author = mysqli_real_escape_string($connection->conn, $_POST['author']);
@@ -23,11 +27,19 @@
         $cover = $_FILES['cover']['name'];
         $tmp = $_FILES['cover']['tmp_name'];
         $target = '../uploads/'.$cover;
-        move_uploaded_file($tmp, $target);
         $description = mysqli_real_escape_string($connection->conn, $_POST['description']);
-        $insert = "INSERT into books (title, author, price, stock, cover, description, id_category) values ('$title','$author','$price','$stock','$cover','$description','$category')";
-        $connection->conn->query($insert);
-        header("location: books.php");
+        if ($cover != ""){
+            move_uploaded_file($tmp, $target);
+            $edit = "UPDATE books set title='$title', author='$author', price='$price', stock='$stock', cover='$cover', description='$description', id_category='$category' where id=".$_GET['id'];
+            $connection->conn->query($edit);
+            header("location: books.php");
+        }
+        else{
+            $edit = "UPDATE books set title='$title', author='$author', price='$price', stock='$stock', description='$description', id_category='$category' where id=".$_GET['id'];
+            $connection->conn->query($edit);
+            header("location: books.php");
+        }
+        
     }
 ?>
 <!DOCTYPE html>
@@ -35,7 +47,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Book</title>
+    <title>Edit Book</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <style>
         .hero{
@@ -107,8 +119,8 @@
         <section class="hero bg-primary shadow mb-5">
             <div class="row align-items-center">
                 <div class="col-lg-7">
-                    <h1 class="fw-bold">Add Book</h1>
-                    <p class="lead mt-2">Fill in the information below to add a new book.</p>
+                    <h1 class="fw-bold">Edit Book</h1>
+                    <p class="lead mt-2">Change any information about a book.</p>
                 </div>
                 <div class="col-lg-5 text-center mt-3">
                     <img src="../assets/heroimage.png" class="img-fluid w-50">
@@ -122,11 +134,11 @@
                     <div class="row">
                         <div class="col-lg-6 mb-4">
                             <label for="title" class="form-label">Title</label>
-                            <input type="text" class="form-control" id="title" name="title" placeholder="Title" required>
+                            <input type="text" value="<?php echo $rowedit['title'];?>" class="form-control" id="title" name="title" placeholder="Title" required>
                         </div>
                         <div class="col-lg-6 mb-4">
                             <label for="author" class="form-label">Author</label>
-                            <input type="text" class="form-control" id="author" name="author" placeholder="Author" required>
+                            <input type="text" value="<?php echo $rowedit['author'];?>" class="form-control" id="author" name="author" placeholder="Author" required>
                         </div>
                     </div>
                     
@@ -138,31 +150,35 @@
                                     $sql = "SELECT * from categories";
                                     $result = $connection->conn->query($sql);
                                     while($row = $result->fetch_assoc()){
-                                        echo'<option value="'.$row['id'].'">'.$row['name'].'</option>';
+                                        $selected = "";
+                                        if ($row['id'] == $rowedit['id_category']){
+                                            $selected = "selected";
+                                        }
+                                        echo'<option value="'.$row['id'].'" '.$selected.'>'.$row['name'].'</option>';
                                         }
                                 ?>
                             </select>
                         </div>
                         <div class="col-lg-6 mb-4">
                             <label for="price" class="form-label">Price</label>
-                            <input type="number" class="form-control" id="price" name="price" placeholder="Price" required>
+                            <input type="number" value="<?php echo $rowedit['price'];?>" class="form-control" id="price" name="price" placeholder="Price" required>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-lg-6 mb-4">
                             <label for="stock" class="form-label">Stock</label>
-                            <input type="number" class="form-control" id="stock" name="stock" placeholder="Stock" required>
+                            <input type="number" value="<?php echo $rowedit['stock'];?>" class="form-control" id="stock" name="stock" placeholder="Stock" required>
                         </div>
                         <div class="col-lg-6 mb-4">
                             <label for="cover" class="form-label">Cover</label>
-                            <input type="file" class="form-control" id="cover" name="cover" required>
+                            <input type="file" class="form-control" id="cover" name="cover">
                         </div>
                     </div>
 
                     <div class="mb-4">
                         <label for="description" class="form-label">Description</label>
-                        <textarea rows="5" name="description" id="description" class="form-control" placeholder="Write a description..."></textarea>
+                        <textarea rows="5" name="description" id="description" class="form-control" placeholder="Write a description..."><?php echo $rowedit['description'];?></textarea>
                     </div>
 
                     <div class="d-flex justify-content-end gap-3">

@@ -3,7 +3,11 @@
     require_once('../library/database.php');
     require_once('../library/koneksi.php');
     $connection = new Database($host, $user, $pass, $database);
-
+        
+    if(!isset($_SESSION['admin'])){
+        header("location: login.php");
+    }
+    
     if(isset($_POST['signout'])){
         unset($_SESSION['admin']);
         unset($_SESSION['id']);
@@ -13,9 +17,10 @@
     if(isset($_POST['submit'])){
         $name = mysqli_real_escape_string($connection->conn, $_POST['name']);
         $description = mysqli_real_escape_string($connection->conn, $_POST['description']);
-        $insert = "INSERT into categories (name, description) values ('$name','$description')";
+        $color = $_POST['color'];
+        $insert = "INSERT into categories (name, description, color) values ('$name','$description','$color')";
         $connection->conn->query($insert);
-        header("location: index.php");
+        header("location: categories.php");
     }
 ?>
 <!DOCTYPE html>
@@ -52,9 +57,6 @@
         textarea{
             resize:none;
         }
-        .btn{
-            border-radius:10px;
-        }
     </style>
 </head>
 <body>
@@ -70,13 +72,13 @@
                         <a href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/admin" class="nav-link" href="#">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Books</a>
+                        <a class="nav-link" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/admin/books.php">Books</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Categories</a>
+                        <a href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/admin/categories.php" class="nav-link active">Categories</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Orders</a>
+                        <a class="nav-link" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/admin/orders.php">Orders</a>
                     </li>
                 </ul>
             </div>
@@ -117,8 +119,20 @@
                         <textarea rows="5" name="description" id="description" class="form-control" placeholder="Write a description..."></textarea>
                     </div>
 
+                    <div class="mb-4">
+                        <label for="color" class="form-label">Color</label>
+                        <select name="color" id="color" class="form-select">
+                            <option value="primary">🔵Blue</option>
+                            <option value="secondary">⚪Gray</option>
+                            <option value="success">🟢Green</option>
+                            <option value="danger">🔴Red</option>
+                            <option value="warning">🟡Yellow</option>
+                            <option value="info">🔵Light Blue</option>
+                            <option value="dark">⚫Black</option>
+                        </select>
+            </div>
                     <div class="d-flex justify-content-end gap-3">
-                        <a href="index.php" class="btn btn-outline-secondary" id="cancel" name="cancel">Cancel</a>
+                        <a href="categories.php" class="btn btn-outline-secondary" id="cancel" name="cancel">Cancel</a>
                         <button type="submit" id="submit" name="submit" class="btn btn-primary">Save</button>
                     </div>
                 </form>

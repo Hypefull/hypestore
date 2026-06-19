@@ -27,21 +27,41 @@
     <title>HypeStore</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <style>
-        .hero{
-            color:white;
+        footer img:hover{
+            transform: scale(110%);
+        }
+        .card{
+            border:none;
             border-radius:20px;
-            padding:60px;
-            min-height: 450px;
+        }
+        .book-cover{
+            width:100%;
+            border-radius:15px;
+            object-fit:cover;
+        }
+        .btn{
+            border-radius:10px;
+        }
+        .badge{
+            font-size:0.9rem;
+            padding:8px 12px;
+        }
+        .star{
+            font-size:40px;
+            color:gold;
+            cursor:pointer;
+            transition:0.2s;
+        }
+        .star:hover{
+            color:gold;
+        }
+        .related-book img{
+            height:220px;
+            object-fit:cover;
         }
         .card-book:hover{
             transform: translateY(-6px);
             transform: scale(103%);
-        }
-        .category-card:hover{
-            transform: scale(110%);
-        }
-        footer img:hover{
-            transform: scale(110%);
         }
     </style>
 </head>
@@ -55,10 +75,10 @@
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Home</a>
+                        <a class="nav-link" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/index.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Books</a>
+                        <a class="nav-link active" href="#">Books</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Orders</a>
@@ -75,85 +95,73 @@
             </form>
         </div>
     </nav>
-
     <div class="container py-5">
-        <section class="hero bg-primary shadow mb-5">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <h1 class="display-4 fw-bold">Your Next</h1>
-                    <h1 class="display-4 fw-bold">Chapter Awaits</h1>
-                    <p class="lead mt-3 mb-4"> Great stories are waiting to be discovered. Your perfect book is just a click away.</p>
-                        <button class="btn btn-light btn-lg me-2">
-                            Browse Books
-                        </button>
-                </div>
-                <div class="col-lg-6 text-center mt-5">
-                    <img src="assets/heroimage2.png" class="img-fluid w-50">
-                </div>
-            </div>
-        </section>
-
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>Popular Categories</h2>
-            <a href="#" class="text-decoration-none">View All</a>
-        </div>
-        <div class="row g-3 mb-5">
-            <div class="col-lg-2">
-                <div class="card category-card text-center shadow-sm border-0 p-3">
-                    <h1>💻</h1>
-                    <h6>Informatics</h6>
-                </div>
-            </div>
-            <div class="col-lg-2">
-                <div class="card category-card text-center shadow-sm border-0 p-3">
-                    <h1>💵</h1>
-                    <h6>Economics</h6>
-                </div>
-            </div>
-            <div class="col-lg-2">
-                <div class="card category-card text-center shadow-sm border-0 p-3">
-                    <h1>👤</h1>
-                    <h6>Biography</h6>
-                </div>
-            </div>
-            <div class="col-lg-2">
-                <div class="card category-card text-center shadow-sm border-0 p-3">
-                    <h1>✨</h1>
-                    <h6>Comics</h6>
-                </div>
-            </div>
-            <div class="col-lg-2">
-                <div class="card category-card text-center shadow-sm border-0 p-3">
-                    <h1>🧠</h1>
-                    <h6>Self-Help</h6>
-                </div>
-            </div>
-            <div class="col-lg-2">
-                <div class="card category-card text-center shadow-sm border-0 p-3">
-                    <h1>📖</h1>
-                    <h6>Novels</h6>
+        <a href="books.php" class="btn btn-outline-secondary mb-4">Back</a>
+        <div class="card shadow-sm mb-5">
+            <div class="card-body p-5">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <img src="uploads/theintelligentinvestor.jpg" class="book-cover">
+                    </div>
+                    <div class="col-lg-8">
+                        <span class="badge bg-success mb-3">Economics</span>
+                        <h1 class="fw-bold">The Intelligent Investor</h1>
+                        <h5 class="text-muted mb-3">Benjamin Graham</h5>
+                        <p class="fs-5 text-warning">⭐4.8/5</p>
+                        <h2 class="text-primary fw-bold">Rp250.000</h2>
+                        <p class="mt-3"><strong>Stock:</strong> 67 Books Available</p>
+                        <hr>
+                        <h5>Description</h5>
+                        <p class="text-secondary">
+                            The Intelligent Investor by Benjamin Graham, first published in 1949, is a widely acclaimed book on value investing. The book provides strategies on how to successfully use value investing in the stock market. Historically, the book has been one of the most popular books on investing and Graham's legacy remains.
+                        </p>
+                        <div class="row mt-4">
+                            <div class="col-lg-3">
+                                <label class="form-label">Quantity</label>
+                                <input type="number" class="form-control" value="1" min="1">
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <button class="btn btn-primary btn-lg me-2">🛒Add to Cart</button>
+                            <button class="btn btn-outline-secondary btn-lg">Buy Now</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="card shadow-sm mb-5">
+            <div class="card-body text-center p-4">
+                <h3>Rate this Book</h3>
+                <p class="text-muted">Click a star to rate this book.</p>
+                <div class="mb-4">
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                </div>
+                <button class="btn btn-primary">Submit Rating</button>
+            </div>
+        </div>
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>Highest Rated Books</h2>
+            <h3>More Programming Books</h3>
             <a href="#" class="text-decoration-none">View All</a>
         </div>
         <div class="row g-4">
             <div class="col-lg-3">
                 <div class="card border-0 shadow-sm card-book h-100">
-                    <img src="assets/placeholder.jpg" width: 300 height: 400 class="card-img-top">
+                    <img src="https://picsum.photos/300/400?1" class="card-img-top">
                     <div class="card-body">
-                        <span class="badge bg-info mb-2">
+                        <span class="badge bg-primary mb-2">
                             Informatics
                         </span>
-                        <h5>Clean Code</h5>
+                        <h5>Refactoring</h5>
                         <p class="text-muted mb-1">
-                            Robert C. Martin
+                            Martin Fowler
                         </p>
                         <p class="text-warning mb-2">⭐ 4.7</p>
                         <h5 class="text-primary fw-bold mb-3">
-                            Rp120.000
+                            Rp145.000
                         </h5>
                     </div>
                     <div class="card-footer bg-white border-0">
@@ -163,26 +171,20 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <br>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>Featured Books</h2>
-        </div>
-        <div class="row g-4">
             <div class="col-lg-3">
                 <div class="card border-0 shadow-sm card-book h-100">
-                    <img src="assets/placeholder.jpg" width: 300 height: 400 class="card-img-top">
+                    <img src="https://picsum.photos/300/400?2" class="card-img-top">
                     <div class="card-body">
-                        <span class="badge bg-info mb-2">
+                        <span class="badge bg-primary mb-2">
                             Informatics
                         </span>
-                        <h5>Clean Code</h5>
+                        <h5>Design Patterns</h5>
                         <p class="text-muted mb-1">
-                            Robert C. Martin
+                            GoF
                         </p>
-                        <p class="text-warning mb-2">⭐ 4.7</p>
+                        <p class="text-warning mb-2">⭐ 4.9</p>
                         <h5 class="text-primary fw-bold mb-3">
-                            Rp120.000
+                            Rp175.000
                         </h5>
                     </div>
                     <div class="card-footer bg-white border-0">
@@ -192,26 +194,43 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <br>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>New Arrivals</h2>
-        </div>
-        <div class="row g-4">
             <div class="col-lg-3">
                 <div class="card border-0 shadow-sm card-book h-100">
-                    <img src="assets/placeholder.jpg" width: 300 height: 400 class="card-img-top">
+                    <img src="https://picsum.photos/300/400?3" class="card-img-top">
                     <div class="card-body">
-                        <span class="badge bg-info mb-2">
+                        <span class="badge bg-primary mb-2">
                             Informatics
                         </span>
-                        <h5>Clean Code</h5>
+                        <h5>Algorithms</h5>
                         <p class="text-muted mb-1">
-                            Robert C. Martin
+                            Robert Sedgewick
                         </p>
-                        <p class="text-warning mb-2">⭐ 4.7</p>
+                        <p class="text-warning mb-2">⭐ 4.6</p>
                         <h5 class="text-primary fw-bold mb-3">
-                            Rp120.000
+                            Rp130.000
+                        </h5>
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <button class="btn btn-light w-100">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card border-0 shadow-sm card-book h-100">
+                    <img src="https://picsum.photos/300/400?4" class="card-img-top">
+                    <div class="card-body">
+                        <span class="badge bg-primary mb-2">
+                            Informatics
+                        </span>
+                        <h5>The Pragmatic Programmer</h5>
+                        <p class="text-muted mb-1">
+                            Andrew Hunt
+                        </p>
+                        <p class="text-warning mb-2">⭐ 4.9</p>
+                        <h5 class="text-primary fw-bold mb-3">
+                            Rp165.000
                         </h5>
                     </div>
                     <div class="card-footer bg-white border-0">
@@ -222,24 +241,8 @@
                 </div>
             </div>
         </div>
-
-        <div class="text-center my-5">
-            <h2>ℹ️ About Us</h2>
-            <p class="text-muted">Best service, best books, best prices.</p>
-        </div>
-        <section class="my-5">
-            <div class="card hero bg-primary border-0 shadow mx-auto w-50">
-                <div class="align-items-center">
-                    <p class="text-white">
-                       At HypeStore, we believe that every great journey begins with a great book. That's why we are dedicated to providing readers with a wide selection of books across various genres at affordable prices. Whether you're looking for bestselling novels, educational resources, timeless classics, or hidden literary gems, you'll find everything you need in one place.
-                        We are committed to delivering the highest quality service and ensuring that every customer enjoys a seamless and satisfying shopping experience. Our goal is to make discovering and purchasing books simple, convenient, and enjoyable for readers of all ages. Whether you're building your personal library, searching for the perfect gift, or simply exploring new stories, HypeStore is here to help you find your next favorite book.
-                        For the latest updates, promotions, and new arrivals, be sure to follow us on our social media platforms.
-                    </p>
-                </div>
-            </div>
-        </section>
-</div>
-    <footer class="bg-tertiary shadow-sm border-top mt-5 py-4">
+    </div>
+<footer class="bg-tertiary shadow-sm border-top mt-5 py-4">
     <div class="container text-center text-muted">
         © 2026 HypeStore. All rights reserved.
         <br>
