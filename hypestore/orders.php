@@ -6,7 +6,7 @@
     $name = "";
     $auth = "";
     if(isset($_SESSION['name'])){
-        $name = $_SESSION['name'];
+        $accountname = $_SESSION['name'];
         $auth = "Logout";
     } else{
         $auth = "Login";
@@ -17,6 +17,61 @@
         unset($_SESSION['id']);
         session_destroy();
         header("location: login.php");
+    }
+
+    if(!isset($_SESSION['id'])){
+        header("location: login.php");
+        exit();
+    }
+
+    $userid = $_SESSION['id'];
+    $sql = "SELECT cart.*, books.title, books.author, books.cover, books.price, books.stock FROM cart JOIN books ON cart.id_book = books.id WHERE cart.id_user='$userid'";
+    $result = $connection->conn->query($sql);
+
+    if(isset($_POST['updatecart'])){
+        $cartid = $_POST['cartid'];
+        $quantity = max(1, $_POST['quantity']);
+        $stockquery = "SELECT books.stock FROM cart JOIN books ON cart.id_book = books.id WHERE cart.id = $cartid";
+        $stockresult = $connection->conn->query($stockquery);
+        $stock = $stockresult->fetch_assoc()['stock'];
+        if($quantity > $stock){
+            $quantity = $stock;
+        }
+        $update = "UPDATE cart SET quantity = $quantity WHERE id = $cartid AND id_user = $userid";
+        $connection->conn->query($update);
+        header("location: orders.php");
+        exit();
+    }
+    if(isset($_POST['checkout'])){
+
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+        $phone = $_POST['phone'];
+        $address = $_POST['address'];
+        $cartquery = "SELECT cart.*, books.price FROM cart JOIN books ON cart.id_book = books.id WHERE cart.id_user='$userid'";
+        $cart = $connection->conn->query($cartquery);
+        $subtotal = 0;
+        while($item = $cart->fetch_assoc()){
+            $subtotal += $item['price'] * $item['quantity'];
+        }
+        $tax = $subtotal * 0.10;
+        $total = $subtotal + $tax;
+        $insertquery = "INSERT INTO orders (id_user,name,email,phone,address,subtotal,tax,total) VALUES ('$userid','$name','$email','$phone','$address','$subtotal','$tax','$total')";
+        $connection->conn->query($insertquery);
+        $orderid = $connection->conn->insert_id;
+        $cartquery = "SELECT cart.*, books.price FROM cart JOIN books ON cart.id_book = books.id WHERE cart.id_user='$userid'";
+        $cart = $connection->conn->query($cartquery);
+        while($item = $cart->fetch_assoc()){
+            $booksubtotal = $item['price'] * $item['quantity'];
+            $insertquery2 = "INSERT INTO order_details (id_order,id_book,price,quantity,subtotal) VALUES ('$orderid','".$item['id_book']."','".$item['price']."','".$item['quantity']."','$booksubtotal')";
+            $updatestockquery = "UPDATE books SET stock = stock - '".$item['quantity']."' WHERE id = '".$item['id_book']."'";
+            $connection->conn->query($insertquery2);
+            $connection->conn->query($updatestockquery);
+        }
+        $emptycartquery = "DELETE FROM cart WHERE id_user='$userid'";
+        $connection->conn->query($emptycartquery);
+        header("location: orders.php");
+        exit();
     }
 ?>
 <!DOCTYPE html>
@@ -84,12 +139,15 @@
                         <a class="nav-link" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/books.php">Books</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/orders.php">Orders</a>
+                        <a class="nav-link active" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/orders.php">Cart</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/orderlist.php">Orders</a>
                     </li>
                 </ul>
             </div>
             <span class="text-white me-3">
-                <?php echo $name;?>
+                <?php echo $accountname;?>
             </span>
             <form method="POST">
                 <button type="submit" name="signout" id="signout" class="btn btn-light">
@@ -125,27 +183,40 @@
                                     <th>Cover</th>
                                     <th>Book</th>
                                     <th>Price</th>
-                                    <th width="140">Quantity</th>
+                                    <th width="100">Quantity</th>
                                     <th>Total</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><img src="uploads/book1.jpg" class="img-thumbnail" width="60"></td>
-                                    <td><b>Atomic Habits</b>
-                                        <br>
-                                        <small class="text-muted">James Clear</small>
-                                    </td>
-                                    <td>Rp95.000</td>
-                                    <td>
-                                        <div class="input-group">
-                                            <button class="btn btn-outline-secondary">-</button>
-                                            <input class="form-control text-center" value="2">
-                                            <button class="btn btn-outline-secondary">+</button>
-                                        </div>
-                                    </td>
-                                    <td>Rp190.000</td>
-                                </tr>
+                                <?php
+                                    $subtotal = 0;
+                                    while ($row = $result->fetch_assoc()){
+                                        $total = $row['price'] * $row['quantity'];
+                                        $subtotal += $total;
+                                        echo '
+                                            <tr>
+                                                <td><img src="uploads/'.$row['cover'].'" class="img-thumbnail" width="60"></td>
+                                                <td><b>'.$row['title'].'</b>
+                                                    <br>
+                                                    <small class="text-muted">'.$row['author'].'</small>
+                                                </td>
+                                                <td>Rp'.number_format($row['price']).'</td>
+                                                <td>
+                                                    <form method="POST">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <input type="hidden" name="cartid" value="'.$row['id'].'">
+                                                            <input type="number" class="form-control-sm text-center" style="width:70px; flex:none;" id="quantity" name="quantity" value="'.$row['quantity'].'"  min="1" max="'.$row['stock'].'">
+                                                            <button class="btn btn-primary btn-sm" name="updatecart">Save</button>
+                                                        </div>
+                                                    </form>
+                                                </td>
+                                                <td>Rp'.number_format($total).'</td>
+                                            </tr>
+                                        ';
+                                    }
+                                    $tax = $subtotal * 0.10;
+                                    $grandtotal = $subtotal + $tax;
+                                ?>
                             </tbody>
                         </table>
                     </div>
@@ -159,7 +230,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <span>Subtotal</span>
-                            <b>Rp565.000</b>
+                            <b>Rp<?php echo number_format($subtotal);?></b>
                         </div>
                         <hr>
                         <div class="d-flex justify-content-between">
@@ -169,12 +240,12 @@
                         <hr>
                         <div class="d-flex justify-content-between">
                             <span>Tax</span>
-                            <b>Rp56.500</b>
+                            <b>Rp<?php echo number_format($tax);?></b>
                         </div>
                         <hr>
                         <div class="d-flex justify-content-between">
                             <h5>Total</h5>
-                            <h5 class="text-primary">Rp621.500</h5>
+                            <h5 class="text-primary">Rp<?php echo number_format($grandtotal);?></h5>
                         </div>
                     </div>
                 </div>
@@ -185,60 +256,62 @@
             <div class="card-header bg-white">
                 <h4>Checkout</h4>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <h5 class="mb-3">Customer Information</h5>
-                        <div class="mb-3">
-                            <label>Name</label>
-                            <input class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label>Email</label>
-                            <input class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label>Phone Number</label>
-                            <input class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label>Address</label>
-                            <textarea class="form-control" rows="4"></textarea>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <h5 class="mb-3">Payment Details</h5>
-                        <div class="mb-3">
-                            <label>Card Holder</label>
-                            <input class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label>Card Number</label>
-                            <input class="form-control" placeholder="1234 5678 9012 3456">
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="mb-3">
-                                    <label>Expiry</label>
-                                    <input class="form-control" placeholder="MM/YY">
-                                </div>
+            <form method="POST">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <h5 class="mb-3">Customer Information</h5>
+                            <div class="mb-3">
+                                <label for="name">Name</label>
+                                <input type="text" name="name" id="name" class="form-control" placeholder="Name" required>
                             </div>
-                            <div class="col-lg-6">
-                                <div class="mb-3">
-                                    <label>CVV</label>
-                                    <input class="form-control">
-                                </div>
+                            <div class="mb-3">
+                                <label for="email">Email</label>
+                                <input type="email" name="email" id="email" class="form-control" placeholder="Email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" name="phone" id="phone" class="form-control" placeholder="Phone Number" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="address">Address</label>
+                                <textarea name="address" id="address" class="form-control" rows="4" placeholder="Enter your address..." required></textarea>
                             </div>
                         </div>
-                        <div class="alert alert-info mt-4">
-                            Make sure to double check your info before checking out.  
+                        <div class="col-lg-6">
+                            <h5 class="mb-3">Payment Details</h5>
+                            <div class="mb-3">
+                                <label for="cardholder">Card Holder</label>
+                                <input name="cardholder" id="cardholder" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="cardnumber">Card Number</label>
+                                <input name="cardnumber" id="cardnumber" class="form-control" placeholder="1234 5678 9012 3456">
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="expiry">Expiry</label>
+                                        <input name="expiry" id="expiry" class="form-control" placeholder="MM/YY">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="cvv">CVV</label>
+                                        <input name="cvv" id="cvv" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert alert-info mt-4">
+                                <strong>IMPORTANT:</strong> Please double check your delivery address and contact details before making your payment! 
+                            </div>
                         </div>
                     </div>
+                    <hr>
+                    <div class="text-end">
+                        <button name="checkout" id="checkout" class="btn btn-primary btn-lg">Checkout</button></div>
                 </div>
-                <hr>
-                <div class="text-end">
-                    <button class="btn btn-primary btn-lg">Checkout</button></div>
-            </div>
+            </form>
         </div>
     </div>
 </div>

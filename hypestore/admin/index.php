@@ -15,6 +15,10 @@
     $resultcategories = $connection->conn->query($totalcategoriesquery);
     $rowcategories = $resultcategories->fetch_assoc();
 
+    $totalordersquery = "SELECT COUNT(*) as total_orders FROM orders";
+    $resultorders = $connection->conn->query($totalordersquery);
+    $roworders = $resultorders->fetch_assoc();
+
     if(isset($_POST['signout'])){
         unset($_SESSION['admin']);
         unset($_SESSION['id']);
@@ -119,7 +123,7 @@
             <div class="card shadow-sm text-center p-4">
                 <h1>📦</h1>
                 <h5>Total Orders</h5>
-                <h2 class="fw-bold">21</h2>
+                <h2 class="fw-bold"><?php echo $roworders['total_orders'];?></h2>
             </div>
         </div>
     </div>

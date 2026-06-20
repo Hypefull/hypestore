@@ -20,6 +20,35 @@
     }
 
     $id = $_GET['id'];
+    if(isset($_POST['addcart'])){
+        if(!isset($_SESSION['id'])){
+            header("location: login.php");
+            exit;
+        }
+        $quantity = max(1, (int)$_POST['quantity']);
+        $userid = $_SESSION['id'];
+        $bookquery = "SELECT stock FROM books WHERE id=$id";
+        $bookstock = $connection->conn->query($bookquery);
+        $book = $bookstock->fetch_assoc();
+        if($quantity > $book['stock']){
+            $quantity = $book['stock'];
+        }
+        $checkquery = "SELECT * FROM cart WHERE id_user=$userid AND id_book=$id";
+        $check = $connection->conn->query($checkquery);
+        if($check->num_rows > 0){
+            $cart = $check->fetch_assoc();
+            $newQuantity = $cart['quantity'] + $quantity;
+            if($newQuantity > $book['stock']){
+                $newQuantity = $book['stock'];
+            }
+            $addtocart = "UPDATE cart SET quantity=$newQuantity WHERE id_user=$userid AND id_book=$id";
+            $connection->conn->query($addtocart);
+        } else {
+            $addtocart = "INSERT INTO cart (id_user,id_book,quantity) VALUES ($userid,$id,$quantity)";
+            $connection->conn->query($addtocart);
+        }
+    }
+
     $selectedquery = "SELECT books.*, categories.name AS category_name, categories.color AS category_color FROM books JOIN categories ON books.id_category = categories.id WHERE books.id = '$id'";
     $result = $connection->conn->query($selectedquery);
     $row = $result->fetch_assoc();
@@ -165,7 +194,10 @@
                         <a class="nav-link active" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/books.php">Books</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/orders.php">Orders</a>
+                        <a class="nav-link" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/orders.php">Cart</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/orderlist.php">Orders</a>
                     </li>
                 </ul>
             </div>
@@ -199,15 +231,17 @@
                         <p class="text-secondary">
                             <?php echo nl2br($row['description']); ?>
                         </p>
-                        <div class="row mt-4">
-                            <div class="col-lg-3">
-                                <label class="form-label">Quantity</label>
-                                <input type="number" class="form-control" value="1" min="1">
+                        <form method="POST">
+                            <div class="row mt-4">
+                                <div class="col-lg-3">
+                                    <label class="form-label">Quantity</label>
+                                    <input type="number" class="form-control" name="quantity" id="quantity" value="1" min="1" max="<?php echo $row['stock'];?>">
+                                </div>
                             </div>
-                        </div>
-                        <div class="mt-4">
-                            <button class="btn btn-primary btn-lg me-2">🛒Add to Cart</button>
-                        </div>
+                            <div class="mt-4">
+                                <button name="addcart" id="addcart" class="btn btn-primary btn-lg me-2" <?php if($row['stock'] == 0) echo "disabled";?>>🛒Add to Cart</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

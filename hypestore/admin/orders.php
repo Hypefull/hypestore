@@ -14,6 +14,24 @@
         session_destroy();
         header("location: login.php");
     }
+    $totalquery = "SELECT COUNT(*) total FROM orders";
+    $totalorders = $connection->conn->query($totalquery);
+    $totaldisplay = $totalorders->fetch_assoc()['total'];
+
+    $pendingquery = "SELECT COUNT(*) total FROM orders WHERE status='Pending'";
+    $pending = $connection->conn->query($pendingquery);
+    $pendingdisplay = $pending->fetch_assoc()['total'];
+
+    $completedquery = "SELECT COUNT(*) total FROM orders WHERE status='Completed'";
+    $completed = $connection->conn->query($completedquery);
+    $completeddisplay = $completed->fetch_assoc()['total'];
+
+    $cancelledquery = "SELECT COUNT(*) total FROM orders WHERE status='Cancelled'";
+    $cancelled = $connection->conn->query($cancelledquery);
+    $cancelleddisplay = $cancelled->fetch_assoc()['total'];
+
+    $status = $_GET['status'] ?? '';
+    $search = $_GET['search'] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,6 +58,10 @@
         } 
         .table th {
             vertical-align: middle;
+        }
+        .badge{
+            font-size:14px;
+            padding:8px 14px;
         }
     </style>
 </head>
@@ -82,49 +104,50 @@
             <div class="col-lg-3">
                 <div class="card statcard bg-primary">
                     <h5>Total Orders</h5>
-                    <h2>1200</h2>
+                    <h2><?php echo $totaldisplay;?></h2>
                 </div>
             </div>
             <div class="col-lg-3">
                 <div class="card statcard bg-warning text-dark">
                     <h5>Pending</h5>
-                    <h2>45</h2>
+                    <h2><?php echo $pendingdisplay;?></h2>
                 </div>
             </div>
             <div class="col-lg-3">
                 <div class="card statcard bg-success">
                     <h5>Completed</h5>
-                    <h2>1100</h2>
+                    <h2><?php echo $completeddisplay;?></h2>
                 </div>
             </div>
             <div class="col-lg-3">
                 <div class="card statcard bg-danger">
                     <h5>Cancelled</h5>
-                    <h2>55</h2>
+                    <h2><?php echo $cancelleddisplay;?></h2>
                 </div>
             </div>
         </div>
 
         <div class="card shadow-sm p-3 mb-4">
-            <div class="row g-3 align-items-end">
-                <div class="col-lg-3">
-                    <label for="status" class="form-label">Status</label>
-                    <select id="status" name="status" class="form-select">
-                        <option value="default" selected hidden>Select Status</option>
-                        <option value="pending">Pending</option>
-                        <option value="shipped">Shipped</option>
-                        <option value="completed">Completed</option>
-                        <option value="cancelled">Cancelled</option>
-                    </select>
+            <form method="GET">
+                <div class="row g-3 align-items-end">
+                    <div class="col-lg-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select id="status" name="status" class="form-select">
+                            <option value="default" selected hidden>Select Status</option>
+                            <option value="pending" <?php if($status=="pending") echo "selected";?>>Pending</option>
+                            <option value="completed" <?php if($status=="completed") echo "selected";?>>Completed</option>
+                            <option value="cancelled" <?php if($status=="cancelled") echo "selected";?>>Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="search" class="form-label">Search</label>
+                        <input id="search" name="search" type="text" class="form-control" value="<?php echo htmlspecialchars($search);?>" placeholder="Search by order ID or customer name...">
+                    </div>
+                    <div class="col-lg-3">
+                        <button class="btn btn-primary w-100">Apply</button>
+                    </div>
                 </div>
-                <div class="col-lg-6">
-                    <label for="search" class="form-label">Search</label>
-                    <input id="search" name="search" type="text" class="form-control" placeholder="Search by order ID or customer...">
-                </div>
-                <div class="col-lg-3">
-                    <button class="btn btn-primary w-100">Apply</button>
-                </div>
-            </div>
+            </form>
         </div>
 
         <div class="card p-3">
@@ -142,15 +165,40 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>#1001</td>
-                        <td>John Doe</td>
-                        <td>2026-06-19</td>
-                        <td>3</td>
-                        <td>Rp 250.000</td>
-                        <td><span class="status-pending">Pending</span></td>
-                        <td><button class="btn btn-sm btn-primary">View</button></td>
-                    </tr>
+                    <?php
+                        $ordersql = "SELECT orders.*, COUNT(order_details.id) AS items FROM orders LEFT JOIN order_details ON orders.id = order_details.id_order WHERE 1=1";
+                        if($search != ""){
+                            $search = $connection->conn->real_escape_string($search);
+                            $ordersql .= " AND (orders.id LIKE '%$search%' OR orders.name LIKE '%$search%')";
+                        }
+                        if($status != "" && $status != "default"){
+                            $ordersql .= " AND orders.status = '$status'";
+                        }
+                        $ordersql .= " GROUP BY orders.id ORDER BY orders.id DESC";
+                        $result = $connection->conn->query($ordersql);
+                        while ($row = $result->fetch_assoc()){
+                            if($row['status'] == "Pending"){
+                                $badge = "warning text-dark";
+                            }
+                            else if($row['status'] == "Completed"){
+                                $badge = "success";
+                            }
+                            else{
+                                $badge = "danger";
+                            }
+                            echo '
+                                <tr>
+                                    <td>#'.$row['id'].'</td>
+                                    <td>'.$row['name'].'</td>
+                                    <td>'.date("d M Y", strtotime($row['created_at'])).'</td>
+                                    <td>'.$row['items'].'</td>
+                                    <td>Rp'.number_Format($row['total']).'</td>
+                                    <td><span class="badge bg-'.$badge.'">'.$row['status'].'</span></td>
+                                    <td><a href="vieworder.php?id='.$row['id'].'"class="btn btn-sm btn-primary">View</a></td>
+                                </tr>
+                            ';
+                        }
+                    ?>
                 </tbody>
             </table>
         </div>
