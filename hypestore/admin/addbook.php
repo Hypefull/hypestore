@@ -64,9 +64,6 @@
         textarea{
             resize:none;
         }
-        .btn{
-            border-radius:10px;
-        }
     </style>
 </head>
 <body>

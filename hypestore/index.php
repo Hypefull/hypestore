@@ -37,6 +37,14 @@
             transform: translateY(-6px);
             transform: scale(103%);
         }
+        .card-book{
+            height:300px;
+            object-fit:cover;
+        }
+        .card-img-top{
+            height:300px;
+            object-fit:cover;
+        }
         .category-card:hover{
             transform: scale(110%);
         }
@@ -55,13 +63,13 @@
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Home</a>
+                        <a class="nav-link active" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/index.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Books</a>
+                        <a class="nav-link" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/books.php">Books</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Orders</a>
+                        <a class="nav-link" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/hypestore/orders.php">Orders</a>
                     </li>
                 </ul>
             </div>
@@ -83,9 +91,7 @@
                     <h1 class="display-4 fw-bold">Your Next</h1>
                     <h1 class="display-4 fw-bold">Chapter Awaits</h1>
                     <p class="lead mt-3 mb-4"> Great stories are waiting to be discovered. Your perfect book is just a click away.</p>
-                        <button class="btn btn-light btn-lg me-2">
-                            Browse Books
-                        </button>
+                        <a href="books.php" class="btn btn-light btn-lg me-2">Browse Books</a>
                 </div>
                 <div class="col-lg-6 text-center mt-5">
                     <img src="assets/heroimage2.png" class="img-fluid w-50">
@@ -95,132 +101,187 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>Popular Categories</h2>
-            <a href="#" class="text-decoration-none">View All</a>
         </div>
         <div class="row g-3 mb-5">
             <div class="col-lg-2">
-                <div class="card category-card text-center shadow-sm border-0 p-3">
-                    <h1>💻</h1>
-                    <h6>Informatics</h6>
-                </div>
+                <a href="books.php?category=1" class="text-decoration-none text-dark">
+                    <div class="card category-card text-center shadow-sm border-0 p-3">
+                        <h1>💻</h1>
+                        <h6>Informatics</h6>
+                    </div>
+                </a>
             </div>
             <div class="col-lg-2">
-                <div class="card category-card text-center shadow-sm border-0 p-3">
-                    <h1>💵</h1>
-                    <h6>Economics</h6>
-                </div>
+                <a href="books.php?category=4" class="text-decoration-none text-dark">
+                    <div class="card category-card text-center shadow-sm border-0 p-3">
+                        <h1>💵</h1>
+                        <h6>Economics</h6>
+                    </div>
+                </a>
             </div>
             <div class="col-lg-2">
-                <div class="card category-card text-center shadow-sm border-0 p-3">
-                    <h1>👤</h1>
-                    <h6>Biography</h6>
-                </div>
+                <a href="books.php?category=7" class="text-decoration-none text-dark">
+                    <div class="card category-card text-center shadow-sm border-0 p-3">
+                        <h1>👤</h1>
+                        <h6>Biography</h6>
+                    </div>
+                </a>
             </div>
             <div class="col-lg-2">
-                <div class="card category-card text-center shadow-sm border-0 p-3">
-                    <h1>✨</h1>
-                    <h6>Comics</h6>
-                </div>
+                <a href="books.php?category=8" class="text-decoration-none text-dark">
+                    <div class="card category-card text-center shadow-sm border-0 p-3">
+                        <h1>✨</h1>
+                        <h6>Comics</h6>
+                    </div>
+                </a>
             </div>
             <div class="col-lg-2">
-                <div class="card category-card text-center shadow-sm border-0 p-3">
-                    <h1>🧠</h1>
-                    <h6>Self-Help</h6>
-                </div>
+                <a href="books.php?category=9" class="text-decoration-none text-dark">
+                    <div class="card category-card text-center shadow-sm border-0 p-3">
+                        <h1>🧠</h1>
+                        <h6>Self-Help</h6>
+                    </div>
+                </a>
             </div>
             <div class="col-lg-2">
-                <div class="card category-card text-center shadow-sm border-0 p-3">
-                    <h1>📖</h1>
-                    <h6>Novels</h6>
-                </div>
+                <a href="books.php?category=3" class="text-decoration-none text-dark">
+                    <div class="card category-card text-center shadow-sm border-0 p-3">
+                        <h1>📖</h1>
+                        <h6>Novels</h6>
+                    </div>
+                </a>
             </div>
         </div>
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>Highest Rated Books</h2>
-            <a href="#" class="text-decoration-none">View All</a>
+            <a href="books.php?sortby=highrating" class="text-decoration-none">View All</a>
         </div>
         <div class="row g-4">
-            <div class="col-lg-3">
-                <div class="card border-0 shadow-sm card-book h-100">
-                    <img src="assets/placeholder.jpg" width: 300 height: 400 class="card-img-top">
-                    <div class="card-body">
-                        <span class="badge bg-info mb-2">
-                            Informatics
-                        </span>
-                        <h5>Clean Code</h5>
-                        <p class="text-muted mb-1">
-                            Robert C. Martin
-                        </p>
-                        <p class="text-warning mb-2">⭐ 4.7</p>
-                        <h5 class="text-primary fw-bold mb-3">
-                            Rp120.000
-                        </h5>
-                    </div>
-                    <div class="card-footer bg-white border-0">
-                        <button class="btn btn-light w-100">
-                            View Details
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <?php 
+                $highestquery = "SELECT books.*, categories.name AS category_name, categories.color AS category_color FROM books JOIN categories ON books.id_category = categories.id ORDER BY books.rating DESC LIMIT 4";
+                $highestresult = $connection->conn->query($highestquery);
+                while ($rowhighest = $highestresult->fetch_assoc()){
+                    if($rowhighest['rating'] == NULL){
+                        $ratinghighest = "No ratings";
+                    }
+                    else{
+                        $ratinghighest = number_format($rowhighest['rating'],1);
+                    }
+                    echo '
+                        <div class="col-lg-3">
+                            <div class="card border-0 shadow-sm card-book h-100">
+                                <img src="uploads/'.$rowhighest['cover'].'" class="card-img-top" style="height:300px; object-fit:contain;">
+                                <div class="card-body">
+                                    <span class="badge bg-'.$rowhighest['category_color'].' mb-2">
+                                        '.$rowhighest['category_name'].'
+                                    </span>
+                                    <h5>'.$rowhighest['title'].'</h5>
+                                    <p class="text-muted mb-1">
+                                        '.$rowhighest['author'].'
+                                    </p>
+                                    <p class="text-warning mb-2">⭐'.$ratinghighest.' / 5</p>
+                                    <h5 class="text-primary fw-bold mb-3">
+                                        Rp'.number_format($rowhighest['price']).'
+                                    </h5>
+                                </div>
+                                <div class="card-footer bg-white border-0">
+                                    <a href="bookdetails.php?id='.$rowhighest['id'].'" class="btn btn-light w-100">
+                                        View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    ';
+                }
+            ?>
+            
+        </div>
+        <br>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>New Arrivals</h2>
+            <a href="books.php?sortby=newest" class="text-decoration-none">View All</a>
+        </div>
+        <div class="row g-4">
+            <?php
+                $newquery = "SELECT books.*, categories.name AS category_name, categories.color AS category_color FROM books JOIN categories ON books.id_category = categories.id ORDER BY books.id DESC LIMIT 4";
+                $newresult = $connection->conn->query($newquery);
+                while ($rownew = $newresult->fetch_assoc()){
+                    if($rownew['rating'] == NULL){
+                        $ratingnew = "No ratings";
+                    }
+                    else{
+                        $ratingnew = number_format($rownew['rating'],1);
+                    }
+                    echo '
+                        <div class="col-lg-3">
+                            <div class="card border-0 shadow-sm card-book h-100">
+                                <img src="uploads/'.$rownew['cover'].'" class="card-img-top" style="height:300px; object-fit:contain;">
+                                <div class="card-body">
+                                    <span class="badge bg-'.$rownew['category_color'].' mb-2">
+                                        '.$rownew['category_name'].'
+                                    </span>
+                                    <h5>'.$rownew['title'].'</h5>
+                                    <p class="text-muted mb-1">
+                                        '.$rownew['author'].'
+                                    </p>
+                                    <p class="text-warning mb-2">⭐'.$ratingnew.' / 5</p>
+                                    <h5 class="text-primary fw-bold mb-3">
+                                        Rp'.number_format($rownew['price']).'
+                                    </h5>
+                                </div>
+                                <div class="card-footer bg-white border-0">
+                                    <a href="bookdetails.php?id='.$rownew['id'].'" class="btn btn-light w-100">
+                                        View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    ';
+                }
+            ?>
         </div>
         <br>
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>Featured Books</h2>
         </div>
         <div class="row g-4">
-            <div class="col-lg-3">
-                <div class="card border-0 shadow-sm card-book h-100">
-                    <img src="assets/placeholder.jpg" width: 300 height: 400 class="card-img-top">
-                    <div class="card-body">
-                        <span class="badge bg-info mb-2">
-                            Informatics
-                        </span>
-                        <h5>Clean Code</h5>
-                        <p class="text-muted mb-1">
-                            Robert C. Martin
-                        </p>
-                        <p class="text-warning mb-2">⭐ 4.7</p>
-                        <h5 class="text-primary fw-bold mb-3">
-                            Rp120.000
-                        </h5>
-                    </div>
-                    <div class="card-footer bg-white border-0">
-                        <button class="btn btn-light w-100">
-                            View Details
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <br>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>New Arrivals</h2>
-        </div>
-        <div class="row g-4">
-            <div class="col-lg-3">
-                <div class="card border-0 shadow-sm card-book h-100">
-                    <img src="assets/placeholder.jpg" width: 300 height: 400 class="card-img-top">
-                    <div class="card-body">
-                        <span class="badge bg-info mb-2">
-                            Informatics
-                        </span>
-                        <h5>Clean Code</h5>
-                        <p class="text-muted mb-1">
-                            Robert C. Martin
-                        </p>
-                        <p class="text-warning mb-2">⭐ 4.7</p>
-                        <h5 class="text-primary fw-bold mb-3">
-                            Rp120.000
-                        </h5>
-                    </div>
-                    <div class="card-footer bg-white border-0">
-                        <button class="btn btn-light w-100">
-                            View Details
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <?php
+                $featuredquery = "SELECT books.*, categories.name AS category_name, categories.color AS category_color FROM books JOIN categories ON books.id_category = categories.id ORDER BY RAND() LIMIT 4";
+                $featuredresult = $connection->conn->query($featuredquery);
+                while ($rowfeatured = $featuredresult->fetch_assoc()){
+                    if($rowfeatured['rating'] == NULL){
+                        $ratingfeatured = "No ratings";
+                    }
+                    else{
+                        $ratingfeatured = number_format($rowfeatured['rating'],1);
+                    }
+                    echo '
+                        <div class="col-lg-3">
+                            <div class="card border-0 shadow-sm card-book h-100">
+                                <img src="uploads/'.$rowfeatured['cover'].'" class="card-img-top" style="height:300px; object-fit:contain;">
+                                <div class="card-body">
+                                    <span class="badge bg-'.$rowfeatured['category_color'].' mb-2">
+                                        '.$rowfeatured['category_name'].'
+                                    </span>
+                                    <h5>'.$rowfeatured['title'].'</h5>
+                                    <p class="text-muted mb-1">
+                                        '.$rowfeatured['author'].'
+                                    </p>
+                                    <p class="text-warning mb-2">⭐'.$ratingfeatured.' / 5</p>
+                                    <h5 class="text-primary fw-bold mb-3">
+                                        Rp'.number_format($rowfeatured['price']).'
+                                    </h5>
+                                </div>
+                                <div class="card-footer bg-white border-0">
+                                    <a href="bookdetails.php?id='.$rowfeatured['id'].'" class="btn btn-light w-100">
+                                        View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    ';
+                }
+            ?>
         </div>
 
         <div class="text-center my-5">
