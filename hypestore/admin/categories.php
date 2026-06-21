@@ -2,7 +2,7 @@
     session_start();
     require_once('../library/database.php');
     require_once('../library/koneksi.php');
-    $connection = new Database($host, $user, $pass, $database);
+    $connection = new Category($host, $user, $pass, $database);
 
     if(!isset($_SESSION['admin'])){
         header("location: login.php");
@@ -132,8 +132,7 @@
                     </thead>
                     <tbody>
                         <?php 
-                            $displayquery = "SELECT * from categories";
-                            $displayresult = $connection->conn->query($displayquery);
+                            $displayresult = $connection->getCategories();
                             $number = 1;
 
                             while($displaycategories = $displayresult->fetch_assoc()){

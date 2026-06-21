@@ -18,4 +18,19 @@
             }
         }
     }
+    class Book extends Database{
+        public function getBooks(){
+            return $this->conn->query("SELECT * FROM books");
+        }
+    }
+    class Order extends Database {
+        public function getOrders(){
+            return $this->conn->query("SELECT * FROM orders");
+        }
+    }
+    class Category extends Database {
+        public function getCategories(){
+            return $this->conn->query("SELECT * FROM categories");
+        }
+    }
 ?>
