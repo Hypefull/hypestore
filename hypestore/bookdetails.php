@@ -275,7 +275,7 @@
         </div>
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3>More <?php echo $row['category_name'];?> Books</h3>
-            <a href="#" class="text-decoration-none">View All</a>
+            <a href="books.php?category=<?php echo $row['id_category'];?>" class="text-decoration-none">View All</a>
         </div>
         <div class="row g-4">
             <?php 
